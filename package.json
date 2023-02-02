@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "config": "^3.3.6",
+    "dayjs": "^1.11.4",
     "express": "^4.17.1",
     "nodemon": "^2.0.15"
   }

@@ -25,10 +25,36 @@ const priceCalculation = (langType, mimetype="none"   , count) => {
   return price;
 };
 
+const WORKING_HOURS = 9;
+const WEEKEND_HOURS = 0;
+
+const timeCalculation = (count, language) => {
+  let workingHours = WORKING_HOURS;
+let symbolsPerHour = 333;
+if (language === 'ru' || language === 'ua') {
+symbolsPerHour = 1333;
+}
+workingHours = Math.ceil(count / symbolsPerHour);
+
+let deadline = new Date();
+let workingDays = Math.ceil(workingHours / WORKING_HOURS);
+
+while (workingDays > 0) {
+deadline.setDate(deadline.getDate() + 1);
+if (deadline.getDay() === 0 || deadline.getDay() === 6) {
+workingDays -= WEEKEND_HOURS;
+} else {
+workingDays -= 1;
+}
+}
+  const formattedDeadline = deadline.toLocaleDateString() + " " + deadline.toLocaleTimeString();
+  return formattedDeadline;
+};
+
 /*
 {
 	"language": "en",
-	"mimetype": "jpg",
+	"mimetype": "docx",
 	"count": 10000
 }
 */
@@ -39,8 +65,8 @@ app.post("/neworder",  (req, res) => {
     newOrder.mimetype,
     newOrder.count
   );
-  console.log(newOrder, price)
-  res.json({price});
+  const deadline = timeCalculation(newOrder.count, newOrder.language);
+  res.json({price, deadline});
 });
 
 const start = async () => {
